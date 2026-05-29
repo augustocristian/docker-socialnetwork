@@ -52,6 +52,11 @@ function _M.Unfollow()
   end
   GenericObjectPool:returnConnection(client)
   span:finish()
+  -- Mirror follow.lua: redirect back to the contact page on success. Without this the
+  -- response falls through with the default application/octet-stream content type, which
+  -- makes the browser treat the form submission as a file download (save-file dialog).
+  ngx.redirect("../../contact.html")
+  ngx.exit(ngx.HTTP_OK)
 
 end
 
