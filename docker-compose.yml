@@ -246,6 +246,29 @@ services:
     volumes:
       - ./config:/social-network-microservices/config
 
+  compose-post-redis:
+    image: redis
+    hostname: compose-post-redis
+    restart: always
+
+  write-home-timeline-rabbitmq:
+    image: rabbitmq
+    hostname: write-home-timeline-rabbitmq
+    restart: always
+
+  write-home-timeline-service:
+    image: deathstarbench/social-network-microservices:latest
+    hostname: write-home-timeline-service
+    depends_on:
+      jaeger-agent:
+        condition: service_started
+      write-home-timeline-rabbitmq:
+        condition: service_started
+    restart: always
+    entrypoint: WriteHomeTimelineService
+    volumes:
+      - ./config:/social-network-microservices/config
+
   nginx-thrift:
     image: yg397/openresty-thrift:xenial
     hostname: nginx-thrift
